@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#090d16" />
+    <title>Realm of Shards — Multiplayer Action RPG</title>
+    <meta name="description" content="A real-time 2D top-down multiplayer action RPG built with HTML5 Canvas and WebSockets." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <canvas id="gameCanvas" aria-label="Realm of Shards Arena"></canvas>
+    <div id="damageVignette" class="damage-vignette" aria-hidden="true"></div>
+
+    <div id="hud" class="hud hidden" aria-live="polite">
+      <section class="hud-card player-status" aria-label="Player Status">
+        <div class="status-header">
+          <div class="player-identity">
+            <span id="hudColorDot" class="player-color-swatch" aria-hidden="true"></span>
+            <span id="hudPlayerName" class="player-name">Hero</span>
+          </div>
+          <div class="status-badges">
+            <span id="hudKills" class="kills-text">0 kills</span>
+            <span class="meta-sep" aria-hidden="true">&middot;</span>
+            <span id="hudLevel" class="level-badge">Lv. 1</span>
+          </div>
+        </div>
+
+        <div class="bar-group">
+          <div class="bar-label-row">
+            <span class="bar-label">HP</span>
+            <span id="hudHpText" class="bar-value">100 / 100</span>
+          </div>
+          <div class="bar-track">
+            <div id="hudHpFill" class="bar-fill hp-fill" style="width: 100%"></div>
+          </div>
+        </div>
+
+        <div class="bar-group">
+          <div class="bar-label-row">
+            <span class="bar-label">XP</span>
+            <span id="hudXpText" class="bar-value">0 / 100</span>
+          </div>
+          <div class="bar-track">
+            <div id="hudXpFill" class="bar-fill xp-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="status-footer">
+          <span id="hudOnlineCount" class="meta-text">1 online</span>
+          <span class="meta-sep" aria-hidden="true">&middot;</span>
+          <span id="hudConnStatus" class="conn-status connected">Connected</span>
+          <button
+            id="audioToggleBtn"
+            class="icon-btn"
+            type="button"
+            title="Toggle Sound Effects"
+            aria-label="Toggle Sound Effects"
+          >
+            Sound On
+          </button>
+        </div>
+      </section>
+
+      <aside class="hud-card leaderboard" aria-label="Top Kills Leaderboard">
+        <div class="leaderboard-header">
+          <h2 class="leaderboard-title">Leaderboard</h2>
+          <span class="leaderboard-sub">Top 5 Kills</span>
+        </div>
+        <ol id="leaderboardList" class="leaderboard-list"></ol>
+      </aside>
+    </div>
+
+    <div id="mobileControls" class="mobile-controls hidden" aria-hidden="true">
+      <div id="joystickZone" class="joystick-zone">
+        <div id="joystickBase" class="joystick-base">
+          <div class="joystick-deadzone" aria-hidden="true"></div>
+          <div id="joystickThumb" class="joystick-thumb"></div>
+        </div>
+      </div>
+      <button id="mobileAttackBtn" class="mobile-attack-btn" type="button" aria-label="Shoot">
+        <svg class="attack-cooldown-ring" viewBox="0 0 84 84" aria-hidden="true">
+          <circle id="mobileCooldownCircle" cx="42" cy="42" r="39" />
+        </svg>
+        <span id="shootAimIndicator" class="shoot-aim-indicator" aria-hidden="true"></span>
+        <span class="mobile-attack-label">Shoot</span>
+      </button>
+    </div>
+
+    <div id="joinOverlay" class="overlay">
+      <div class="modal-card join-card">
+        <div class="shard-emblem" aria-hidden="true"></div>
+        <h1 class="modal-title">Realm of Shards</h1>
+        <p class="modal-subtitle">Move: WASD / Joystick &bull; Shoot: Click, Tap, or Space</p>
+
+        <form id="joinForm" class="join-form" novalidate>
+          <label class="input-label" for="playerNameInput">Champion Name</label>
+          <input
+            id="playerNameInput"
+            class="name-input"
+            type="text"
+            maxlength="14"
+            placeholder="Enter name (max 14 chars)"
+            autocomplete="off"
+            spellcheck="false"
+            required
+          />
+          <p id="joinError" class="error-text" role="alert"></p>
+
+          <button id="enterWorldBtn" class="primary-btn" type="submit">
+            <span id="enterWorldText">Enter World</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="deathOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="deathTitle">
+      <div class="modal-card death-card">
+        <h2 id="deathTitle" class="death-title">YOU HAVE FALLEN</h2>
+        <p id="deathSubtitle" class="modal-subtitle">Your journey is not over...</p>
+        <div class="death-actions">
+          <button id="mainMenuBtn" class="secondary-btn" type="button">
+            MAIN MENU
+          </button>
+          <button id="respawnBtn" class="primary-btn" type="button">
+            RESPAWN
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/client.js"></script>
+  </body>
+</html>

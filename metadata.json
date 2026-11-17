@@ -1,0 +1,8 @@
+{
+  "name": "Remix Realm of Shards",
+  "description": "A real-time 2D top-down multiplayer action RPG built with HTML5 Canvas and WebSockets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
